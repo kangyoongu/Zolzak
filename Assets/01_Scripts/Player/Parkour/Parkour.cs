@@ -13,13 +13,13 @@ public abstract class Parkour : MonoBehaviour
     [SerializeField] protected LayerMask castLayer;
 
     Tweener tweener;
-    public void Init(Player player)
+    public virtual void Init(Player player)
     {
         _nameHash = Animator.StringToHash(gameObject.name);
         originPos = new List<Vector3>();
         _player = player;
     }
-    public abstract bool ActionCondition(Transform player);
+    public abstract bool ActionCondition(Transform player, ref Parkour parkour);
     public void Play()
     {
         _player.playerAnim.anim.SetTrigger(_nameHash);
@@ -29,7 +29,7 @@ public abstract class Parkour : MonoBehaviour
     {
         if (movePos[_index].duration == -1f)
         {
-            if (tweener != null && tweener.IsPlaying()) tweener.Kill();
+            if (tweener != null && tweener.IsActive()) tweener.Kill();
 
             _player.Rigidbody.isKinematic = false;
             _player.Rigidbody.AddRelativeForce(movePos[_index].pos, ForceMode.Force);
@@ -37,7 +37,7 @@ public abstract class Parkour : MonoBehaviour
         else
         {
             _player.Rigidbody.isKinematic = true;
-            tweener = _player.transform.DOMove(originPos[_index] + movePos[_index].pos, movePos[_index].duration).SetEase(Ease.Linear);
+            tweener = _player.transform.DOMove(originPos[_index] + _player.transform.TransformDirection(movePos[_index].pos), movePos[_index].duration).SetEase(Ease.Linear);
         }
         _index++;
     }

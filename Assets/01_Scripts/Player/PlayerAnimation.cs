@@ -15,4 +15,8 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetFloat("X", _direction.x);
         anim.SetFloat("Y", _direction.z);
     }
+    public void SetTrigger(string name)
+    {
+        anim.SetTrigger(name);
+    }
 }

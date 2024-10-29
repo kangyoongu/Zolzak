@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerParkour : MonoBehaviour
 {
     [SerializeField] private List<Parkour> _parkours;
+    [SerializeField] private List<ActionState> _actions;
     Player _player;
 
     Parkour _currentParkour;
@@ -18,6 +19,10 @@ public class PlayerParkour : MonoBehaviour
         {
             parkour.Init(_player);
         }
+        foreach (ActionState action in _actions)
+        {
+            action.Init(_player);
+        }
         _player.playerInput.OnJump += () =>
         {
             Vector3 localVelocity = transform.InverseTransformDirection(_player.Rigidbody.linearVelocity);
@@ -26,13 +31,18 @@ public class PlayerParkour : MonoBehaviour
     }
     private void CheckAction(Vector3 velocity)
     {
-        if (velocity.z < 9f) return; 
+        if (!_player.playerMovement.grounded) return;
+        if (velocity.z < 9f)
+        {
+            _player.playerMovement.Jump();
+            return;
+        } 
         
         foreach (Parkour parkour in _parkours)
         {
-            if (parkour.ActionCondition(transform))
+            if (parkour.ActionCondition(transform, ref _currentParkour))
             {
-                StartAnim(parkour);
+                StartAnim();
                 return;
             }
         }
@@ -40,11 +50,9 @@ public class PlayerParkour : MonoBehaviour
         _player.playerMovement.Jump();
     }
 
-    private void StartAnim(Parkour parkour)
+    private void StartAnim()
     {
-        parkour.Play();
-        _currentParkour = parkour;
-
+        _currentParkour.Play();
         _player.StartPhysics();
     }
 
@@ -57,5 +65,28 @@ public class PlayerParkour : MonoBehaviour
     {
         _currentParkour.EndAnim();
         _player.EndPhysics();
+    }
+    public void StartAction(string name)
+    {
+        foreach (ActionState action in _actions)
+        {
+            if(name == action.gameObject.name)
+            {
+                action.StartAction();
+                return;
+            }
+        }
+    }
+    public void EndAction(string name)
+    {
+
+        foreach (ActionState action in _actions)
+        {
+            if (name == action.gameObject.name)
+            {
+                action.EndAction();
+                return;
+            }
+        }
     }
 }

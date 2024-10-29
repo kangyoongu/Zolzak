@@ -17,6 +17,7 @@ public class PlayerInput : ScriptableObject
     public event Action OnShift;
     public Vector2 Movement { get; private set; }
     public bool Shift { get; private set; }
+    public bool DownJump { get; private set; }
 
     private void OnEnable()
     {
@@ -28,6 +29,7 @@ public class PlayerInput : ScriptableObject
         _inputAction.Playing.Move.canceled += Movement_performed;
         _inputAction.Playing.Shift.performed += (obj) => Shift = true;
         _inputAction.Playing.Shift.canceled += (obj) => Shift = false;
+        _inputAction.Playing.Jump.canceled += (obj) => DownJump = false;
     }
     private void Movement_performed(InputAction.CallbackContext obj)
     {
@@ -39,6 +41,7 @@ public class PlayerInput : ScriptableObject
     }
     private void Jump_performed(InputAction.CallbackContext obj)
     {
+        DownJump = true;
         OnJump?.Invoke();
     }
     private void OnDisable()
