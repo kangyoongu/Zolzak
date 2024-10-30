@@ -11,11 +11,13 @@ public class WallSlide : ActionState
     }
     public override void StartAction()
     {
-
-        //base.StartAction();
+        if (_player.parkouring) return;
+        AnimatorStateInfo stateInfo = _player.playerAnim.anim.GetCurrentAnimatorStateInfo(0);
+        if (!stateInfo.IsName("Falling Idle")) return;
+        base.StartAction();
     }
     public override void EndAction()
     {
-        //base.EndAction();
+        base.EndAction();
     }
 }
