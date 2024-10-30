@@ -22,7 +22,7 @@ public class WallClimb : Parkour
             Vector3 playerDir = player.forward;
             Vector3 origin = hitPos + (playerDir * 0.05f);
 
-            if (!Physics.Raycast(new Ray(origin, Vector3.up), _height + 2f, castLayer))
+            if (!Physics.Raycast(new Ray(hitPos + (playerDir * -0.05f), Vector3.up), _height + 2f, castLayer))
             {
                 if (Physics.Raycast(new Ray(origin + (Vector3.up * _height), Vector3.down), out RaycastHit hit2, _height, castLayer))//장애물 높이 체크
                 {

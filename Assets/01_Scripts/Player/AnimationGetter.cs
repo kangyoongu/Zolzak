@@ -5,6 +5,7 @@ public class AnimationGetter : MonoBehaviour
 {
     public Player player;
     public UnityEvent ClimbStart;
+    public UnityEvent ClimbEnd;
     public void SetPos()
     {
         player.playerParkour.SetPos();
@@ -24,5 +25,9 @@ public class AnimationGetter : MonoBehaviour
     public void ClimbEvent()
     {
         ClimbStart?.Invoke();
+    }
+    public void EndClimb()
+    {
+        ClimbEnd?.Invoke();
     }
 }

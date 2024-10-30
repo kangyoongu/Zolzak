@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -67,9 +68,12 @@ public class PlayerMovement : MonoBehaviour
     }
     public void UnlockY(bool rHead = false)
     {
-        _yaw = transform.localEulerAngles.y;
         if (rHead)
         {
+            DOTween.To(() => _yaw, x => _yaw = x, transform.localEulerAngles.y, 0.5f).OnUpdate(() =>
+            {
+                _camTrm.localEulerAngles = new Vector3(-_pitch, _yaw, 3.5f);
+            });
             _camTrm.DOLocalRotate(new Vector3(_camTrm.localEulerAngles.x, 1.09f, 3.5f), 0.5f).OnComplete(() =>
             {
                 _lockY = false;
@@ -77,13 +81,17 @@ public class PlayerMovement : MonoBehaviour
             _rotateHead = false;
         }
         else
+        {
+            _yaw = transform.localEulerAngles.y;
             _lockY = false;
+        }
     }
     private void Update()
     {
         FallingCheck();
         Move(_player.playerInput.Movement);
     }
+
 
     private void FallingCheck()
     {
@@ -101,8 +109,8 @@ public class PlayerMovement : MonoBehaviour
         if (_player.parkouring == false)
         {
             int weight = 1;
-            if (_player.playerInput.Shift)
-                weight *= 2;
+
+            if (_player.playerInput.Shift) weight *= 2;
 
             Vector3 velocity = _rb.linearVelocity;
 
@@ -129,8 +137,10 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if(_triggerCnt == 0) {
+
             if (_fallPoint.y - _player.transform.position.y > _rollHeight)
                 _player.playerAnim.anim.SetInteger("Landing", 2);
+
             else
                 _player.playerAnim.anim.SetInteger("Landing", 1);
 

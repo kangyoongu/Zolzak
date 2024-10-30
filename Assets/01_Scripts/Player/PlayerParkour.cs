@@ -23,7 +23,7 @@ public class PlayerParkour : MonoBehaviour
         {
             action.Init(_player);
         }
-        _player.playerInput.OnJump += () =>
+        _player.playerInput.DownJump += () =>
         {
             Vector3 localVelocity = transform.InverseTransformDirection(_player.Rigidbody.linearVelocity);
             CheckAction(localVelocity);

@@ -6,7 +6,7 @@ public abstract class ActionState : MonoBehaviour
 {
     protected Player _player;
     protected bool _actioning = false;
-    public void Init(Player player)
+    public virtual void Init(Player player)
     {
         _player = player;
     }
