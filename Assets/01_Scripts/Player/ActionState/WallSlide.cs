@@ -11,10 +11,11 @@ public class WallSlide : ActionState
     }
     public override void StartAction()
     {
-        base.StartAction();
+
+        //base.StartAction();
     }
     public override void EndAction()
     {
-        base.EndAction();
+        //base.EndAction();
     }
 }

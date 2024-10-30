@@ -50,7 +50,7 @@ public class WallClimb : Parkour
                         {
                             failureActions[1].originPos.Add(Vector3.Lerp(hitPos, hit.point, 0.43f));
                             failureActions[1].originPos.Add(hit4.point);
-                            failureActions[1].originPos.Add(hit4.point + (playerDir * 0.01f));
+                            failureActions[1].originPos.Add(hit4.point);
                             parkour = failureActions[1];
                             return true;
                         }
