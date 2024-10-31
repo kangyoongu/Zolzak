@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using UnityEngine;
 
 public class Climb : ActionState
@@ -23,17 +24,22 @@ public class Climb : ActionState
     public override void Init(Player player)
     {
         base.Init(player);
-        _player.playerInput.DownJump += () =>
-        {
-            if (_isClimb)
-            {
-                _player.playerAnim.SetTrigger("Falling");
-                EndAction();
-            }
-        };
+        _player.playerInput.DownJump += Judgment;
     }
+
     private void Update()
     {
+        ClimbingFunc();
+    }
+
+    private void Judgment()
+    {
+        if (_isClimb)
+        {
+            EndAction();
+            return;
+        }
+
         if (_player.playerMovement.grounded == false && _player.playerInput.Jumping && !_player.parkouring && _climbCooltime < 0f)
         {
             if (CheckIfPointsAreOnSamePlane(out Vector3 rayCenter, out Vector3 dir))
@@ -46,7 +52,6 @@ public class Climb : ActionState
                 _player.playerParkour.StartAction("Climb");
             }
         }
-        ClimbingFunc();
     }
 
     private void ClimbingFunc()
@@ -118,9 +123,12 @@ public class Climb : ActionState
     }
     public override void EndAction()
     {
+        if (!_isClimb) return;
+
         base.EndAction();
         _upable = false;
         _player.playerAnim.anim.SetBool("Climb", false);
+        _player.playerAnim.SetTrigger("Falling");
         _player.playerMovement.UnlockY(true);
         _isClimb = false;
         _climbCooltime = 1f;
