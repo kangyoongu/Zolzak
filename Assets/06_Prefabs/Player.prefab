@@ -5762,6 +5762,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fefcc6581ac297941a41d5b973c29695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 439
+  wallOffset: {x: -0.613893, y: 0, z: 0}
+  speed: 10
 --- !u!1 &8030730397657336351
 GameObject:
   m_ObjectHideFlags: 0

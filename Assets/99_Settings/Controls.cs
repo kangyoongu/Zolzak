@@ -71,6 +71,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f277a6e-d407-4dd7-9a47-ee268b3f7287"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Ctrl"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3ca2f3d-f751-4008-8bb9-f94fc1e97054"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -202,6 +222,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Playing_Jump = m_Playing.FindAction("Jump", throwIfNotFound: true);
         m_Playing_Shift = m_Playing.FindAction("Shift", throwIfNotFound: true);
         m_Playing_Ctrl = m_Playing.FindAction("Ctrl", throwIfNotFound: true);
+        m_Playing_Click = m_Playing.FindAction("Click", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -273,6 +294,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Playing_Jump;
     private readonly InputAction m_Playing_Shift;
     private readonly InputAction m_Playing_Ctrl;
+    private readonly InputAction m_Playing_Click;
     public struct PlayingActions
     {
         private @Controls m_Wrapper;
@@ -282,6 +304,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Playing_Jump;
         public InputAction @Shift => m_Wrapper.m_Playing_Shift;
         public InputAction @Ctrl => m_Wrapper.m_Playing_Ctrl;
+        public InputAction @Click => m_Wrapper.m_Playing_Click;
         public InputActionMap Get() { return m_Wrapper.m_Playing; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -306,6 +329,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Ctrl.started += instance.OnCtrl;
             @Ctrl.performed += instance.OnCtrl;
             @Ctrl.canceled += instance.OnCtrl;
+            @Click.started += instance.OnClick;
+            @Click.performed += instance.OnClick;
+            @Click.canceled += instance.OnClick;
         }
 
         private void UnregisterCallbacks(IPlayingActions instance)
@@ -325,6 +351,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Ctrl.started -= instance.OnCtrl;
             @Ctrl.performed -= instance.OnCtrl;
             @Ctrl.canceled -= instance.OnCtrl;
+            @Click.started -= instance.OnClick;
+            @Click.performed -= instance.OnClick;
+            @Click.canceled -= instance.OnClick;
         }
 
         public void RemoveCallbacks(IPlayingActions instance)
@@ -358,5 +387,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
         void OnCtrl(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
     }
 }

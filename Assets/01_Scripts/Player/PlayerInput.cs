@@ -18,6 +18,8 @@ public class PlayerInput : ScriptableObject
     public event Action OnShift;
     public event Action DownCtrl;
     public event Action UpCtrl;
+    public event Action LCDown;
+    public event Action LCUp;
     public Vector2 Movement { get; private set; }
     public bool Shift { get; private set; }
     public bool Jumping { get; private set; }
@@ -33,6 +35,8 @@ public class PlayerInput : ScriptableObject
         _inputAction.Playing.Jump.canceled += Jump_canceled;
         _inputAction.Playing.Shift.performed += (obj) => Shift = true;
         _inputAction.Playing.Shift.canceled += (obj) => Shift = false;
+        _inputAction.Playing.Click.performed += (obj) => LCDown?.Invoke();
+        _inputAction.Playing.Click.canceled += (obj) => LCUp?.Invoke();
 
         _inputAction.Playing.Ctrl.performed += (obj) => DownCtrl?.Invoke();
         _inputAction.Playing.Ctrl.canceled += (obj) => UpCtrl?.Invoke();

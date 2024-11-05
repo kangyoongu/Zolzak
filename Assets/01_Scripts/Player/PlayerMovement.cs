@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
     Vector3 _fallPoint = Vector3.zero;
 
     bool _lockY = false;
+    bool _lockX = false;
+    Vector2Int _beforeLock = Vector2Int.zero;
     bool _rotateHead = false;
     private void Awake()
     {
@@ -35,17 +37,19 @@ public class PlayerMovement : MonoBehaviour
         _camParent = _camTrm.parent;
         _player.playerInput.OnAim += Aim;
     }
-    void Start()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
     void Aim(Vector2 pos)
     {
-        _yaw += _camSpeed * 0.1f * pos.x; 
-        _pitch += _camSpeed * 0.1f * pos.y; 
+        if (!_lockY || _rotateHead == true)
+        {
+            if(Cursor.visible == false)
+                _yaw += _camSpeed * 0.1f * pos.x;
+        }
+        if (!_lockX && Cursor.visible == false)
+        {
+            _pitch += _camSpeed * 0.1f * pos.y;
 
-        _pitch = Mathf.Clamp(_pitch, -60f, 80f);
+            _pitch = Mathf.Clamp(_pitch, -60f, 80f);
+        }
 
         if(!_lockY)
             transform.localEulerAngles = new Vector3(0, _yaw, 0);
@@ -54,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
             _yaw = Mathf.Clamp(_yaw, -70f, 70f);
             _camTrm.localEulerAngles = new Vector3(-_pitch, _yaw, 3.5f);
         }
-        else
+        else if (!_lockY)
             _camTrm.localEulerAngles = new Vector3(-_pitch, 1.09f, 3.5f);
     }
     public void LockY(bool rHead = false)
@@ -65,9 +69,19 @@ public class PlayerMovement : MonoBehaviour
             _yaw = 1.09f;
             _rotateHead = true;
         }
+        else
+        {
+            _rotateHead = false;
+        }
     }
     public void UnlockY(bool rHead = false)
     {
+        if (_lockX && _lockY && !_rotateHead)
+        {
+            if (rHead) _beforeLock.y = 0;
+            return;
+        }
+
         if (rHead)
         {
             DOTween.To(() => _yaw, x => _yaw = x, transform.localEulerAngles.y, 0.5f).OnUpdate(() =>
@@ -85,6 +99,36 @@ public class PlayerMovement : MonoBehaviour
             _yaw = transform.localEulerAngles.y;
             _lockY = false;
         }
+    }
+    public void LockX()
+    {
+        _lockX = true;
+    }
+    public void UnlockX()
+    {
+        if (_lockX && _lockY && !_rotateHead) return;
+        _lockX = false;
+    }
+    public void Lock()
+    {
+        _beforeLock.x = _lockX ? 1 : 0;
+        _beforeLock.y = _lockY ? 1 : 0;
+        _beforeLock.y = _rotateHead ? 2 : _beforeLock.y;
+        LockX();
+        LockY();
+    }
+    public void Unlock()
+    {
+        if (_beforeLock.x == 0)
+            _lockX = false;
+        if (_beforeLock.y == 0)
+        {
+            _lockY = false;
+            _rotateHead = false;
+        }
+        if (_beforeLock.y == 2)
+            _rotateHead = true;
+        _beforeLock = Vector2Int.zero;
     }
     private void Update()
     {
