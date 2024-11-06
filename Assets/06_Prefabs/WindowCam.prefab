@@ -45,7 +45,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 2
+  m_projectionMatrixMode: 1
   m_GateFitMode: 0
   m_FOVAxisMode: 0
   m_Iso: 200
@@ -75,7 +75,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 512
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: ff757abbd44c4cf4986e868998623f80, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: 257f350d32aeb8f4393b03000f9a7f85, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
