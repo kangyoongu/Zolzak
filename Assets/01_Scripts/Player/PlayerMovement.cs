@@ -9,7 +9,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _camSpeed = 5f;
     [SerializeField] private float _jumpPower = 200f;
-    [SerializeField] private float _rollHeight = 10f;
+    [SerializeField] private float _minDamageHeight = 10f;
+    [SerializeField] private float _maxDamageHeight = 20f;
+    [SerializeField] private float _minDamage = 0.05f;
+    [SerializeField] private float _maxDamage = 1f;
+
     [SerializeField] private Transform _camTrm;
 
     private Transform _camParent;
@@ -150,18 +154,18 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(Vector2 input)
     {
+        int weight = 1;
+
+        if (_player.playerInput.Shift) weight *= 2;
+
+        Vector3 velocity = _rb.linearVelocity;
+
+        Vector3 localMovement = new Vector3(input.x * weight, 0, input.y * weight);
+        _direction = Vector3.Lerp(_direction, localMovement, 7f * Time.deltaTime);
+        _player.playerAnim.SetDirection(_direction);
+
         if (_player.parkouring == false)
         {
-            int weight = 1;
-
-            if (_player.playerInput.Shift) weight *= 2;
-
-            Vector3 velocity = _rb.linearVelocity;
-
-            Vector3 localMovement = new Vector3(input.x * weight, 0, input.y * weight);
-            _direction = Vector3.Lerp(_direction, localMovement, 7f * Time.deltaTime);
-            _player.playerAnim.SetDirection(_direction);
-
             Vector3 worldMovement = transform.TransformDirection(_direction);
 
             velocity.x = worldMovement.x * _moveSpeed;
@@ -182,13 +186,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if(_triggerCnt == 0) {
 
-            if (_fallPoint.y - _player.transform.position.y > _rollHeight && _player.playerInput.Jumping)
+            if (_fallPoint.y - _player.transform.position.y > _minDamageHeight && _player.playerInput.Jumping)
                 _player.playerAnim.anim.SetInteger("Landing", 2);
 
             else
             {
                 _player.playerAnim.anim.SetInteger("Landing", 1);
-                if (_fallPoint.y - _player.transform.position.y > _rollHeight)
+                if (_fallPoint.y - _player.transform.position.y > _minDamageHeight)
                     _player.GetDamage(0.1f);
             }
 

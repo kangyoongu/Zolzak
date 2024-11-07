@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0ce55e1cccf56944d85971688e43fc7c
+guid: ebc12cb0e7ffcef478a8cb971d45a83f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,14 +31,14 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Braced Hang To Crouch
+      name: Climbing
       takeName: mixamo.com
-      internalID: 4183582347713063346
+      internalID: -203655887218126122
       firstFrame: 0
       lastFrame: 34
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0.14
+      level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
@@ -54,14 +54,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events:
-      - time: 1
-        functionName: EndClimb
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
+      events: []
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

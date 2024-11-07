@@ -350,7 +350,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         _dragging = false;
         OnClose?.Invoke();
         Destroy(_camCompo.gameObject);
-        Destroy(gameObject);
+        Destroy(_parent.gameObject);
     }
 }
 
