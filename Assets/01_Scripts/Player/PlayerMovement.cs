@@ -182,11 +182,15 @@ public class PlayerMovement : MonoBehaviour
     {
         if(_triggerCnt == 0) {
 
-            if (_fallPoint.y - _player.transform.position.y > _rollHeight)
+            if (_fallPoint.y - _player.transform.position.y > _rollHeight && _player.playerInput.Jumping)
                 _player.playerAnim.anim.SetInteger("Landing", 2);
 
             else
+            {
                 _player.playerAnim.anim.SetInteger("Landing", 1);
+                if (_fallPoint.y - _player.transform.position.y > _rollHeight)
+                    _player.GetDamage(0.1f);
+            }
 
             _fallPoint = Vector3.zero;
         }

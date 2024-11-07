@@ -61,6 +61,11 @@ public class FollowerCam : MonoBehaviour
             Transform child = _container.GetChild(0);
             child.parent = null;
             child.gameObject.layer = LayerMask.NameToLayer("Default");
+            if(child.TryGetComponent(out Collider collider))
+            {
+                if (collider.enabled == false)
+                    collider.enabled = true;
+            }
         }
     }
 }

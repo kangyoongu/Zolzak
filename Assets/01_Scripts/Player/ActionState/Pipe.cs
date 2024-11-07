@@ -2,7 +2,7 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 
-public class Climb : ActionState
+public class Pipe : ActionState
 {
     public float sphereRadius = 0.3f; // SphereCast의 반지름
     public float maxDistance = 5.0f;  // SphereCast의 최대 거리

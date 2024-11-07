@@ -16,7 +16,17 @@ public class WindowMove : MonoBehaviour, IPointerDownHandler, IDragHandler
     }
     public void OnDrag(PointerEventData eventData)
     {
-        parentRectTransform.position = eventData.position + _offset;
-        _windowController.ChangeWindow();
+        Vector2 before = parentRectTransform.position;
+
+        Vector2 targetPos = eventData.position + _offset;
+        parentRectTransform.position = targetPos;
+
+        bool outX = _windowController.IsImagePartiallyOutOfScreenX(parentRectTransform, out float valueX);
+        bool outY = _windowController.IsImagePartiallyOutOfScreenY(parentRectTransform, out float valueY);
+
+        parentRectTransform.position = new Vector3(outX ? valueX : targetPos.x, outY ? valueY: targetPos.y, parentRectTransform.position.z);
+
+        if((Vector2)parentRectTransform.position != before)
+            _windowController.ChangeWindow();
     }
 }

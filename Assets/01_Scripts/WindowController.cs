@@ -11,10 +11,9 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     public float outlineWidth;
     public bool fixRatio;
     public Vector3 offset;
-    
+
     private Camera _camera;
     private FollowerCam _camCompo;
-    private Camera _mainCam;
     private RectTransform _rectTransform;
     private Transform _parent;
     Material _imageMat;
@@ -36,7 +35,6 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         _rectTransform = GetComponent<RectTransform>();
         _parent = transform.parent;
 
-        _mainCam = Camera.main;
         GameObject cam = Instantiate(renderCamera);
 
         _camera = cam.GetComponent<Camera>();
@@ -45,7 +43,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     void Start()
     {
         _startY = _rectTransform.sizeDelta.y;
-        _camCompo.Init(_mainCam.transform, offset, this, Screen.height / _startY);
+        _camCompo.Init(Definder.MainCam.transform, offset, this, Screen.height / _startY);
 
         _ratioX = _rectTransform.sizeDelta.x / _rectTransform.sizeDelta.y;
         _ratioY = _rectTransform.sizeDelta.y / _rectTransform.sizeDelta.x;
@@ -137,7 +135,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
                 }
             }
 
-            if (IsImagePartiallyOutOfScreen(_rectTransform))
+            if (IsImagePartiallyOutOfScreen(_rectTransform, out Vector2 outMargin))
             {
                 transform.position = beforePos;
                 _rectTransform.sizeDelta = beforeSize;
@@ -146,18 +144,51 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
                 ChangeWindow();
         }
     }
-    public bool IsImagePartiallyOutOfScreen(RectTransform rect)
+    public bool IsImagePartiallyOutOfScreen(RectTransform rect, out Vector2 outValue)
     {
-        Vector2 halfSize = rect.sizeDelta * 0.5f;
-        // 왼쪽 아래와 오른쪽 위 좌표
-        Vector2 bottomLeft = (Vector2)rect.position - halfSize;
-        Vector2 topRight = (Vector2)rect.position + halfSize;
+        float valueX;
+        float valueY;
+        bool outX = IsImagePartiallyOutOfScreenX(rect, out valueX);
+        bool outY = IsImagePartiallyOutOfScreenY(rect, out valueY);
+        outValue = new Vector2(valueX, valueY);
 
-        // 화면 경계를 벗어났는지 확인
-        bool isOutOfScreen = bottomLeft.x < 0f || bottomLeft.y < 0f ||
-                             topRight.x > Screen.width || topRight.y > Screen.height;
+        return outX || outY;
+        
+    }
+    public bool IsImagePartiallyOutOfScreenX(RectTransform rect, out float outValue)
+    {
+        float halfSize = rect.sizeDelta.x * 0.5f;
 
-        return isOutOfScreen;
+        // 이미지의 x축 왼쪽과 오른쪽 끝 좌표
+        float left = rect.position.x - halfSize;
+        float right = rect.position.x + halfSize;
+
+        if (left < 0f)
+            outValue = 0.1f + halfSize;
+        else if (right > Screen.width)
+            outValue = Screen.width - halfSize - 0.1f;
+        else
+            outValue = 0f;
+        // x축 기준으로 화면 밖으로 나갔는지 확인
+        return outValue != 0f;
+    }
+
+    public bool IsImagePartiallyOutOfScreenY(RectTransform rect, out float outValue)
+    {
+        float halfSize = rect.sizeDelta.y * 0.5f;
+
+        // 이미지의 y축 아래와 위쪽 끝 좌표
+        float bottom = rect.position.y - halfSize;
+        float top = rect.position.y + halfSize;
+
+        if (bottom < 0f)
+            outValue = 0.1f + halfSize;
+        else if (top > Screen.height)
+            outValue = Screen.height - halfSize - 0.1f;
+        else
+            outValue = 0f;
+        // x축 기준으로 화면 밖으로 나갔는지 확인
+        return outValue != 0f;
     }
 
     private void DragMoveX(PointerEventData eventData, int sign, float minSize, bool changeX = true, float weight = 1f, bool move = true)
