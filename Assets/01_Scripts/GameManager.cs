@@ -11,11 +11,12 @@ public class GameManager : SingleTon<GameManager>
     [SerializeField] Camera _renderCam;
     void Start()
     {
-        Core.ResetToDefaultCursor();
+        Core.SetCustomCursor(Core.NORMAL);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         FitWindowScene();
     }
+
 
     private void FitWindowScene()
     {

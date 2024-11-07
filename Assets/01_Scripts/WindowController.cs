@@ -18,6 +18,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     private RectTransform _rectTransform;
     private Transform _parent;
     Material _imageMat;
+    public Action OnClose;
 
     Vector2 _clickPoint;
     Vector2 _clickPos;
@@ -27,22 +28,25 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     bool _dragging = false;
     float _ratioX;
     float _ratioY;
-    float _scaleRatio;
+    float _startY;
+
+    public Action<float, Vector2> OnChangeWindow;
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
         _parent = transform.parent;
 
         _mainCam = Camera.main;
-        //GameObject cam = Instantiate(renderCamera);
+        GameObject cam = Instantiate(renderCamera);
 
-        //_camera = cam.GetComponent<Camera>();
-        //_camCompo = cam.GetComponent<FollowerCam>();
-        //_camCompo.Init(_mainCam.transform, offset);
+        _camera = cam.GetComponent<Camera>();
+        _camCompo = cam.GetComponent<FollowerCam>();
     }
     void Start()
     {
-        _scaleRatio = 1f / _rectTransform.sizeDelta.x;
+        _startY = _rectTransform.sizeDelta.y;
+        _camCompo.Init(_mainCam.transform, offset, this, Screen.height / _startY);
+
         _ratioX = _rectTransform.sizeDelta.x / _rectTransform.sizeDelta.y;
         _ratioY = _rectTransform.sizeDelta.y / _rectTransform.sizeDelta.x;
 
@@ -50,7 +54,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         _imageMat = Instantiate(targetImage.material);
         _imageMat.SetTexture("_WindowTex", GameManager.Instance.fullscreenTexture);
         targetImage.material = _imageMat;
-        OnChangeWindow();
+        ChangeWindow();
     }
 
 
@@ -69,13 +73,6 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         }
     }
 
-    private bool IsPointInOutline(Vector2 localPoint, Vector2 imageSize)
-    {
-        Vector2 min = new Vector2(outlineWidth - imageSize.x, outlineWidth - imageSize.y);
-        Vector2 max = new Vector2(imageSize.x - outlineWidth, imageSize.y - outlineWidth);
-
-        return localPoint.x < min.x || localPoint.x > max.x || localPoint.y < min.y || localPoint.y > max.y;
-    }
     private bool IsPointInOutline(Vector2 localPoint, Vector2 imageSize, out DragDirection dir)
     {
         dir = DragDirection.None;
@@ -109,6 +106,9 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         {
             if (_clickDirection == DragDirection.None) return;
 
+            Vector3 beforePos = transform.position;
+            Vector2 beforeSize = _rectTransform.sizeDelta;
+
             int[] sign = Core.ShortToSignArray((short)_clickDirection);
             if ((short)_clickDirection > 3)
             {
@@ -136,9 +136,30 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
                     DragMoveX(eventData, sign[0], 50f);
                 }
             }
-            OnChangeWindow();
+
+            if (IsImagePartiallyOutOfScreen(_rectTransform))
+            {
+                transform.position = beforePos;
+                _rectTransform.sizeDelta = beforeSize;
+            }
+            else
+                ChangeWindow();
         }
     }
+    public bool IsImagePartiallyOutOfScreen(RectTransform rect)
+    {
+        Vector2 halfSize = rect.sizeDelta * 0.5f;
+        // 왼쪽 아래와 오른쪽 위 좌표
+        Vector2 bottomLeft = (Vector2)rect.position - halfSize;
+        Vector2 topRight = (Vector2)rect.position + halfSize;
+
+        // 화면 경계를 벗어났는지 확인
+        bool isOutOfScreen = bottomLeft.x < 0f || bottomLeft.y < 0f ||
+                             topRight.x > Screen.width || topRight.y > Screen.height;
+
+        return isOutOfScreen;
+    }
+
     private void DragMoveX(PointerEventData eventData, int sign, float minSize, bool changeX = true, float weight = 1f, bool move = true)
     {
         float offset = _clickPoint.x - eventData.position.x;
@@ -212,51 +233,93 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if(_dragging)
+        if (_dragging)
+        {
+            Core.SetCustomCursor(Core.NORMAL);
             _dragging = false;
+        }
     }
 
     public void OnPointerMove(PointerEventData eventData)
     {
+        if (_dragging) return;
+
         Vector2 localPoint = eventData.position - (Vector2)transform.position;
         // 이미지의 크기 가져오기
         Vector2 imageSize = _rectTransform.rect.size - (_rectTransform.rect.size * 0.5f);
         // 외곽선 여부 확인
-        if (IsPointInOutline(localPoint, imageSize))
+        if (IsPointInOutline(localPoint, imageSize, out _clickDirection))
         {
-            Core.SetCursorNS();
+            switch (_clickDirection)
+            {
+                case DragDirection.UR:
+                case DragDirection.DL:
+                    Core.SetCustomCursor(Core.CLOCK2);
+                    break;
+                case DragDirection.DR:
+                case DragDirection.UL:
+                    Core.SetCustomCursor(Core.CLOCK5);
+                    break;
+                case DragDirection.U:
+                case DragDirection.D:
+                    Core.SetCustomCursor(Core.CLOCK12);
+                    break;
+                case DragDirection.R:
+                case DragDirection.L:
+                    Core.SetCustomCursor(Core.CLOCK3);
+                    break;
+                case DragDirection.None:
+                    Core.SetCustomCursor(Core.NORMAL);
+                    break;
+            }
         }
         else
-            Core.ResetToDefaultCursor();
+            Core.SetCustomCursor(Core.NORMAL);
     }
-    public void OnChangeWindow()
+    public void ChangeWindow()
     {
         Vector2 pos = targetImage.transform.position;
         Vector2 size = new Vector2(targetImage.rectTransform.rect.width, targetImage.rectTransform.rect.height);
         pos -= size * 0.5f;
-        float x = Mathf.Lerp(0, 1, pos.x / Screen.width);
-        float y = Mathf.Lerp(0, 1, pos.y / Screen.height);
+
+        // x와 y 비율 계산
+        float x = size.x / Screen.width;
+        float y = size.y / Screen.height;
+
+        _imageMat.SetVector("_Size", new Vector2(x, y));
+
+        x = Mathf.Lerp(0, 1, pos.x / Screen.width);
+        y = Mathf.Lerp(0, 1, pos.y / Screen.height);
 
         _imageMat.SetVector("_Pos", new Vector2(x, y));
 
-        // x와 y 비율 계산
-        x = size.x / Screen.width;
-        y = size.y / Screen.height;
-
-        _imageMat.SetVector("_Size", new Vector2(x, y));
+        OnChangeWindow?.Invoke(_startY / _rectTransform.sizeDelta.y, 
+            new Vector2(Mathf.Lerp(0f, 1f, targetImage.transform.position.x / Screen.width), 
+                        Mathf.Lerp(0f, 1f, targetImage.transform.position.y / Screen.height)));
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        Core.ResetToDefaultCursor();
+        if (_dragging) return;
+
+        Core.SetCustomCursor(Core.NORMAL);
     }
     public void Open()
     {
-        _parent.DOScale(Vector3.one, 0.2f).SetEase(Ease.Linear);
+        _parent.DOScale(Vector3.one, 0.2f).SetEase(Ease.Linear).OnUpdate(() =>
+        {
+            ChangeWindow();
+        });
     }
     public void Close()
     {
-        _parent.DOScale(Vector3.zero, 0.2f).SetEase(Ease.Linear);
+        /*_parent.DOScale(Vector3.zero, 0.2f).SetEase(Ease.Linear).OnUpdate(() =>
+        {
+            ChangeWindow();
+        });*/
         _dragging = false;
+        OnClose?.Invoke();
+        Destroy(_camCompo.gameObject);
+        Destroy(gameObject);
     }
 }
 

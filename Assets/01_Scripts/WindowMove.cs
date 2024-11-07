@@ -17,6 +17,6 @@ public class WindowMove : MonoBehaviour, IPointerDownHandler, IDragHandler
     public void OnDrag(PointerEventData eventData)
     {
         parentRectTransform.position = eventData.position + _offset;
-        _windowController.OnChangeWindow();
+        _windowController.ChangeWindow();
     }
 }
