@@ -6,4 +6,9 @@ public class WallRun : Parkour
     {
         return true;
     }
+    public override void EndAnim()
+    {
+        base.EndAnim();
+        _player.playerMovement.grounded = true;
+    }
 }

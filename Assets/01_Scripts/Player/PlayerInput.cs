@@ -10,14 +10,14 @@ public class PlayerInput : ScriptableObject
     private Controls _inputAction;
     public Controls InputAction => _inputAction;
 
-    public event Action<Vector2> OnMovement;
     public event Action<Vector2> OnAim;
     public event Action DownJump;
     public event Action UpJump;
     public event Action ClickEsc;
-    public event Action OnShift;
     public event Action DownCtrl;
     public event Action UpCtrl;
+    public event Action DownShift;
+    public event Action UpShift;
     public event Action LCDown;
     public event Action LCUp;
     public Vector2 Movement { get; private set; }
@@ -33,13 +33,25 @@ public class PlayerInput : ScriptableObject
         _inputAction.Playing.Move.canceled += Movement_performed;
         _inputAction.Playing.Jump.performed += Jump_performed;
         _inputAction.Playing.Jump.canceled += Jump_canceled;
-        _inputAction.Playing.Shift.performed += (obj) => Shift = true;
-        _inputAction.Playing.Shift.canceled += (obj) => Shift = false;
+        _inputAction.Playing.Shift.performed += Shift_performed;
+        _inputAction.Playing.Shift.canceled += Shift_canceled;
         _inputAction.Playing.Click.performed += (obj) => LCDown?.Invoke();
         _inputAction.Playing.Click.canceled += (obj) => LCUp?.Invoke();
 
         _inputAction.Playing.Ctrl.performed += (obj) => DownCtrl?.Invoke();
         _inputAction.Playing.Ctrl.canceled += (obj) => UpCtrl?.Invoke();
+    }
+
+    private void Shift_canceled(InputAction.CallbackContext obj)
+    {
+        UpShift?.Invoke();
+        Shift = false;
+    }
+
+    private void Shift_performed(InputAction.CallbackContext obj)
+    {
+        DownShift?.Invoke();
+        Shift = true;
     }
 
     private void Jump_canceled(InputAction.CallbackContext obj)

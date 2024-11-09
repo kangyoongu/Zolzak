@@ -13,34 +13,94 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _maxDamageHeight = 20f;
     [SerializeField] private float _minDamage = 0.05f;
     [SerializeField] private float _maxDamage = 1f;
+    [SerializeField] private float _rollLimite = 0.5f;
 
     [SerializeField] private Transform _camTrm;
-
-    private Transform _camParent;
-    private Player _player;
-    private Rigidbody _rb;
-
-    float _pitch = 0f;
-    float _yaw = 0f;
 
     public LayerMask groundLayer;
     public bool grounded = true;
 
-    Vector3 _direction = Vector3.zero;
-    int _triggerCnt = 0;
-    Vector3 _fallPoint = Vector3.zero;
+    private Rigidbody _rb;
+    private Player _player;
 
+    float downShiftTimer = 0f;
+    float _pitch = 0f;
+    float _yaw = 0f;
+
+
+    Vector2Int _beforeLock = Vector2Int.zero;
+    Vector3 _direction = Vector3.zero;
+    Vector3 _fallPoint = Vector3.zero;
+    int _triggerCnt = 0;
+
+    public bool LockedY { get => _lockY; private set => Debug.Log("Dont try"); }
     bool _lockY = false;
     bool _lockX = false;
-    Vector2Int _beforeLock = Vector2Int.zero;
     bool _rotateHead = false;
+
+    #region UNITY_EVENTS
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _player = GetComponent<Player>();
-        _camParent = _camTrm.parent;
+    }
+    private void OnEnable()
+    {
+        _player.playerInput.UpShift += PlayerInput_UpShift;
         _player.playerInput.OnAim += Aim;
     }
+    private void Update()
+    {
+        FallingCheck();
+        Move(_player.playerInput.Movement);
+    }
+    private void OnDisable()
+    {
+        _player.playerInput.UpShift -= PlayerInput_UpShift;
+        _player.playerInput.OnAim -= Aim;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(_triggerCnt == 0) {
+
+            if (_fallPoint.y - _player.transform.position.y > _minDamageHeight && downShiftTimer <= _rollLimite && downShiftTimer > 0f)
+                _player.playerAnim.anim.SetInteger("Landing", 2);
+            else
+            {
+                _player.playerAnim.anim.SetInteger("Landing", 1);
+                if (_fallPoint.y - _player.transform.position.y > _minDamageHeight)
+                    _player.GetDamage(0.1f);
+            }
+
+            _fallPoint = Vector3.zero;
+        }
+        _triggerCnt++;
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (!grounded)
+        {
+            grounded = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        _triggerCnt--;
+        if (_triggerCnt == 0 && !_player.parkouring)
+        {
+            _player.playerAnim.anim.SetInteger("Landing", 0);
+            _fallPoint = _player.transform.position;
+            _player.playerAnim.SetTrigger("Falling");
+            grounded = false;
+        }
+    }
+    #endregion
+
+    private void PlayerInput_UpShift()
+    {
+        downShiftTimer = 0f;
+    }
+
     void Aim(Vector2 pos)
     {
         if (!_lockY || _rotateHead == true)
@@ -48,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
             if(Cursor.visible == false)
                 _yaw += _camSpeed * 0.1f * pos.x;
         }
+
         if (!_lockX && Cursor.visible == false)
         {
             _pitch += _camSpeed * 0.1f * pos.y;
@@ -65,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
         else if (!_lockY)
             _camTrm.localEulerAngles = new Vector3(-_pitch, 1.09f, 3.5f);
     }
+
     public void LockY(bool rHead = false)
     {
         _lockY = true;
@@ -80,12 +142,6 @@ public class PlayerMovement : MonoBehaviour
     }
     public void UnlockY(bool rHead = false)
     {
-        if (_lockX && _lockY && !_rotateHead)
-        {
-            if (rHead) _beforeLock.y = 0;
-            return;
-        }
-
         if (rHead)
         {
             DOTween.To(() => _yaw, x => _yaw = x, transform.localEulerAngles.y, 0.5f).OnUpdate(() =>
@@ -121,24 +177,6 @@ public class PlayerMovement : MonoBehaviour
         LockX();
         LockY();
     }
-    public void Unlock()
-    {
-        if (_beforeLock.x == 0)
-            _lockX = false;
-        if (_beforeLock.y == 0)
-        {
-            _lockY = false;
-            _rotateHead = false;
-        }
-        if (_beforeLock.y == 2)
-            _rotateHead = true;
-        _beforeLock = Vector2Int.zero;
-    }
-    private void Update()
-    {
-        FallingCheck();
-        Move(_player.playerInput.Movement);
-    }
 
 
     private void FallingCheck()
@@ -149,6 +187,10 @@ public class PlayerMovement : MonoBehaviour
             _fallPoint = _player.transform.position;
             _player.playerAnim.SetTrigger("Falling");
             grounded = false;
+        }
+        if(grounded == false && _player.playerInput.Shift)
+        {
+            downShiftTimer += Time.deltaTime;
         }
     }
 
@@ -180,42 +222,6 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && _rb.isKinematic == false && !_player.parkouring)
         {
             _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpPower, _rb.linearVelocity.z);
-        }
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(_triggerCnt == 0) {
-
-            if (_fallPoint.y - _player.transform.position.y > _minDamageHeight && _player.playerInput.Jumping)
-                _player.playerAnim.anim.SetInteger("Landing", 2);
-
-            else
-            {
-                _player.playerAnim.anim.SetInteger("Landing", 1);
-                if (_fallPoint.y - _player.transform.position.y > _minDamageHeight)
-                    _player.GetDamage(0.1f);
-            }
-
-            _fallPoint = Vector3.zero;
-        }
-        _triggerCnt++;
-    }
-    private void OnTriggerStay(Collider other)
-    {
-        if (!grounded)
-        {
-            grounded = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        _triggerCnt--;
-        if (_triggerCnt == 0 && !_player.parkouring)
-        {
-            _player.playerAnim.anim.SetInteger("Landing", 0);
-            _fallPoint = _player.transform.position;
-            _player.playerAnim.SetTrigger("Falling");
-            grounded = false;
         }
     }
 }

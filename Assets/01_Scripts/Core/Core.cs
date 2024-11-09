@@ -47,4 +47,10 @@ public static class Core
     {
         return outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);
     }
+    public static Vector3 RotateVector(Vector3 referenceVector, Vector3 targetVector)
+    {
+        // referenceVector 방향을 기준으로 targetVector를 회전
+        Quaternion rotation = Quaternion.LookRotation(referenceVector);
+        return rotation * targetVector;
+    }
 }

@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] List<Collider> bodyCollider;
 
+    public Action<Collision> OnPlayerCollisionEnter;
     private void Awake()
     {
         _rigid = GetComponent<Rigidbody>();
@@ -57,5 +58,9 @@ public class Player : MonoBehaviour
     public void GetDamage(float damage)
     {
 
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        OnPlayerCollisionEnter?.Invoke(collision);
     }
 }

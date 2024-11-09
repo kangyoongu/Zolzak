@@ -968,6 +968,7 @@ Transform:
   - {fileID: 6888218988499634255}
   - {fileID: 927975615264924352}
   - {fileID: 8767823650694821125}
+  - {fileID: 8802066127999594239}
   m_Father: {fileID: 1076538299914117769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1086645023352519914
@@ -2734,11 +2735,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movePos:
   - pos: {x: 0, y: 0, z: -0.819}
+    duration: 0.15
+  - pos: {x: 0, y: -0.9, z: -0.25}
     duration: 0.2
-  - pos: {x: 0, y: 0, z: -0.819}
-    duration: 0.4
-  - pos: {x: 0, y: 0, z: -0.2}
-    duration: 0.2
+  - pos: {x: 0, y: -0.3, z: 0.53}
+    duration: 0.6
   originPos: []
   castLayer:
     serializedVersion: 2
@@ -4445,6 +4446,58 @@ Transform:
   - {fileID: 809126922515980616}
   m_Father: {fileID: 5939740838425402603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6817470220155039852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8802066127999594239}
+  - component: {fileID: 3055557332468201028}
+  m_Layer: 6
+  m_Name: Hanging
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8802066127999594239
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6817470220155039852}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8223124006873340799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3055557332468201028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6817470220155039852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99825c929601d0540a0f78fb55b3a177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hangDistance: 2
+  force: 20
+  sideMoveDis: 1
+  _hangOffset: {x: 0, y: -2.3, z: 0}
+  _duration: 0.5
+  _hangLayer:
+    serializedVersion: 2
+    m_Bits: 183
 --- !u!1 &6822721718368473466
 GameObject:
   m_ObjectHideFlags: 0
@@ -4732,6 +4785,7 @@ GameObject:
   - component: {fileID: 7663197675994694898}
   - component: {fileID: 4844536171458325669}
   - component: {fileID: 2457493693271994651}
+  - component: {fileID: 8090116256760904683}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -4767,8 +4821,8 @@ Rigidbody:
   m_GameObject: {fileID: 7050619256316036905}
   serializedVersion: 4
   m_Mass: 10
-  m_Drag: 0.4
-  m_AngularDrag: 0.5
+  m_Drag: 1
+  m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -4800,7 +4854,10 @@ MonoBehaviour:
   _moveSpeed: 5
   _camSpeed: 0.5
   _jumpPower: 5
-  _rollHeight: 7
+  _minDamageHeight: 10
+  _maxDamageHeight: 20
+  _minDamage: 0.05
+  _maxDamage: 1
   _camTrm: {fileID: 8719781053824386865}
   groundLayer:
     serializedVersion: 2
@@ -4838,6 +4895,7 @@ MonoBehaviour:
   - {fileID: 4611794841607832596}
   - {fileID: 7977687971558865958}
   - {fileID: 6274283167224744294}
+  - {fileID: 3055557332468201028}
 --- !u!114 &2457493693271994651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4869,6 +4927,18 @@ MonoBehaviour:
   - {fileID: 1963336058600800415}
   - {fileID: 7274690802598927721}
   - {fileID: 1789201055600412460}
+--- !u!75 &8090116256760904683
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7050619256316036905}
+  m_Enabled: 1
+  m_Force: {x: 0, y: -5, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!1 &7082741053267771735
 GameObject:
   m_ObjectHideFlags: 0
@@ -5394,13 +5464,14 @@ MonoBehaviour:
   castLayer:
     serializedVersion: 2
     m_Bits: 439
-  _height: 1.51
-  _maxHeight: 10
-  _dis: 5
-  _width: 2.5
   failureActions:
   - {fileID: 6650399098854051513}
   - {fileID: 6927521548559204817}
+  _obsCheckHeight: 0.5
+  _dis: 5
+  _height: 1.51
+  _maxHeight: 10
+  _width: 2.5
 --- !u!1 &7532168953182428864
 GameObject:
   m_ObjectHideFlags: 0
@@ -5778,7 +5849,7 @@ GameObject:
   - component: {fileID: 6888218988499634255}
   - component: {fileID: 4611794841607832596}
   m_Layer: 6
-  m_Name: Climb
+  m_Name: Pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5811,17 +5882,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 225d85a046200c849857acf99f32d14f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereRadius: 0.3
-  maxDistance: 0.6
-  offsetY: 2
-  offsetX: 0.4
-  tolerance: 0.1
-  xWeight: 1
-  yWeight: 1
-  moveDuration: 1
-  beforeUpOffset: {x: 0, y: -1.46724, z: 0}
-  _offset: {x: 0, y: 0, z: -0.35}
-  _duration: 0.5
+  hangDistance: 2
+  offsetY: 1.8
+  speed: 0.8
+  sideMoveDis: 1
+  _hangOffset: {x: 0, y: 0, z: -0.344}
+  _duration: 1.1
+  _hangDuratdion: 0.5
   _climbLayer:
     serializedVersion: 2
     m_Bits: 439

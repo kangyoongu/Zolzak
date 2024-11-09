@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class Parkour : MonoBehaviour
 {
-    private Player _player;
+    protected Player _player;
     private int _nameHash;
     public List<Moving> movePos;
     [HideInInspector] public List<Vector3> originPos;
@@ -42,7 +42,7 @@ public abstract class Parkour : MonoBehaviour
         _index++;
     }
 
-    public void EndAnim()
+    public virtual void EndAnim()
     {
         originPos = new List<Vector3>();
         _index = 0;
