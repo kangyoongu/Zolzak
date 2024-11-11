@@ -23,31 +23,31 @@ public class PlayerParkour : MonoBehaviour
         {
             action.Init(_player);
         }
-        _player.playerInput.DownJump += () =>
-        {
-            Vector3 localVelocity = transform.InverseTransformDirection(_player.Rigidbody.linearVelocity);
-            CheckAction(localVelocity);
-        };
+        _player.playerInput.DownJump += CheckAction;
     }
-    private void CheckAction(Vector3 velocity)
+    private void OnDestroy()
     {
-        if (!_player.playerMovement.grounded) return;
-        if (velocity.z < 9f)
-        {
-            _player.playerMovement.Jump();
-            return;
-        } 
-        
+
+        _player.playerInput.DownJump -= CheckAction;
+    }
+    private void CheckAction()
+    {
+        if (_player.parkouring) return;
+
+        Vector3 localVelocity = transform.InverseTransformDirection(_player.Rigidbody.linearVelocity);
+        float speed = localVelocity.z;
+
         foreach (Parkour parkour in _parkours)
         {
-            if (parkour.ActionCondition(transform, ref _currentParkour))
+            if (parkour.ActionCondition(transform, speed, ref _currentParkour))
             {
                 StartAnim();
                 return;
             }
         }
 
-        _player.playerMovement.Jump();
+        if (_player.playerMovement.grounded)
+            _player.playerMovement.Jump();
     }
 
     private void StartAnim()

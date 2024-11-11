@@ -8,6 +8,7 @@ public class GameManager : SingleTon<GameManager>
     public Player player;
     public Canvas canvas;
     public RenderTexture fullscreenTexture;
+    public Transform rightUp;
     [SerializeField] Camera _renderCam;
     void Start()
     {

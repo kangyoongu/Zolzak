@@ -21,7 +21,10 @@ public class Pipe : ActionState
         _player.playerInput.DownJump += Judgment;
         _offsetY = Vector3.up * offsetY;
     }
-
+    private void OnDestroy()
+    {
+        _player.playerInput.DownJump -= Judgment;
+    }
     private void Update()
     {
         DuringClimb();

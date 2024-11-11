@@ -13,7 +13,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     public Vector3 offset;
 
     private Camera _camera;
-    private FollowerCam _camCompo;
+    private WindowCam _camCompo;
     private RectTransform _rectTransform;
     private Transform _parent;
     Material _imageMat;
@@ -28,17 +28,21 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     float _ratioX;
     float _ratioY;
     float _startY;
+    float screenHeight;
+    float taskbarHeight;
 
     public Action<float, Vector2> OnChangeWindow;
     private void Awake()
     {
+        taskbarHeight = UIManager.Instance.taskbar.rectTransform.sizeDelta.y;
+        screenHeight = Screen.height - taskbarHeight;
         _rectTransform = GetComponent<RectTransform>();
         _parent = transform.parent;
 
         GameObject cam = Instantiate(renderCamera);
 
         _camera = cam.GetComponent<Camera>();
-        _camCompo = cam.GetComponent<FollowerCam>();
+        _camCompo = cam.GetComponent<WindowCam>();
     }
     void Start()
     {
@@ -181,10 +185,10 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         float bottom = rect.position.y - halfSize;
         float top = rect.position.y + halfSize;
 
-        if (bottom < 0f)
-            outValue = 0.1f + halfSize;
-        else if (top > Screen.height)
-            outValue = Screen.height - halfSize - 0.1f;
+        if (bottom < taskbarHeight)
+            outValue = 0.1f + halfSize + taskbarHeight;
+        else if (top > screenHeight + taskbarHeight)
+            outValue = screenHeight - halfSize - 0.1f + taskbarHeight;
         else
             outValue = 0f;
         // x축 기준으로 화면 밖으로 나갔는지 확인

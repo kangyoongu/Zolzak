@@ -19,7 +19,7 @@ public abstract class Parkour : MonoBehaviour
         originPos = new List<Vector3>();
         _player = player;
     }
-    public abstract bool ActionCondition(Transform player, ref Parkour parkour);
+    public abstract bool ActionCondition(Transform player, float speed, ref Parkour parkour);
     public void Play()
     {
         _player.playerAnim.anim.SetTrigger(_nameHash);

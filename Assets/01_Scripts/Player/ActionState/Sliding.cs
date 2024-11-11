@@ -9,6 +9,11 @@ public class Sliding : ActionState
         _player.playerInput.DownCtrl += StartAction;
         _player.playerInput.UpCtrl += EndAction;
     }
+    private void OnDestroy()
+    {
+        _player.playerInput.DownCtrl -= StartAction;
+        _player.playerInput.UpCtrl -= EndAction;
+    }
     private void Update()
     {
         if (_sliding)

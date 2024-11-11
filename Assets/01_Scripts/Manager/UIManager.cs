@@ -14,7 +14,7 @@ public enum Dir : short
 public struct UI
 {
     public RectTransform changeUI;
-    public Image fadeUI;
+    public CanvasGroup fadeUI;
     public TextMeshProUGUI fadeText;
     public Dir dir;
     public Vector2 inAndOut;
@@ -28,6 +28,7 @@ public class UIManager : SingleTon<UIManager>
     public UI[] mainUI;
     public UI[] playUI;
     public GameObject block;
+    public Image taskbar;
     public void GameOverUIIn()
     {
         In(gameOverUI);

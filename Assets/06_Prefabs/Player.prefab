@@ -1099,6 +1099,61 @@ Transform:
   - {fileID: 1862001006771528000}
   m_Father: {fileID: 8318364471001961692}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1580867573625830066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2588154768536465999}
+  - component: {fileID: 3876277136608154277}
+  m_Layer: 6
+  m_Name: FreeWallCrouch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2588154768536465999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580867573625830066}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1757896038562282613}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3876277136608154277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580867573625830066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f0e4b60ed6f4164dbf0db6b19c00674, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movePos:
+  - pos: {x: 0, y: 0, z: -0.23}
+    duration: 0.15
+  - pos: {x: 0, y: -0.53, z: 0}
+    duration: 0.33
+  - pos: {x: 0, y: 0, z: 0.2}
+    duration: 0.51
+  originPos: []
+  castLayer:
+    serializedVersion: 2
+    m_Bits: 183
 --- !u!1 &1774933503983652221
 GameObject:
   m_ObjectHideFlags: 0
@@ -4491,7 +4546,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hangDistance: 2
-  force: 20
+  force: 23
+  flyForce: 36
   sideMoveDis: 1
   _hangOffset: {x: 0, y: -2.3, z: 0}
   _duration: 0.5
@@ -4858,6 +4914,7 @@ MonoBehaviour:
   _maxDamageHeight: 20
   _minDamage: 0.05
   _maxDamage: 1
+  _rollLimite: 0.3
   _camTrm: {fileID: 8719781053824386865}
   groundLayer:
     serializedVersion: 2
@@ -5467,11 +5524,14 @@ MonoBehaviour:
   failureActions:
   - {fileID: 6650399098854051513}
   - {fileID: 6927521548559204817}
+  - {fileID: 3876277136608154277}
   _obsCheckHeight: 0.5
   _dis: 5
   _height: 1.51
-  _maxHeight: 10
+  _maxHeight: 5
   _width: 2.5
+  _freeDis: 1
+  _freeHeight: 2
 --- !u!1 &7532168953182428864
 GameObject:
   m_ObjectHideFlags: 0
@@ -5924,6 +5984,7 @@ Transform:
   - {fileID: 2080020439251243499}
   - {fileID: 3409634132811658526}
   - {fileID: 4740381665565311205}
+  - {fileID: 2588154768536465999}
   m_Father: {fileID: 1076538299914117769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8285379871656572644

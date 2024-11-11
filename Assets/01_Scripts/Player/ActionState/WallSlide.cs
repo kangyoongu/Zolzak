@@ -68,7 +68,11 @@ public class WallSlide : ActionState
         _player.playerInput.DownJump += StartAction;
         _player.playerInput.UpJump += EndAction;
     }
-
+    private void OnDestroy()
+    {
+        _player.playerInput.DownJump -= StartAction;
+        _player.playerInput.UpJump -= EndAction;
+    }
     public override void StartAction()
     {
         StartCoroutine(FrameLast());
