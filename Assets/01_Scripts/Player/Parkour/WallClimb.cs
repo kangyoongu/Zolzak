@@ -62,16 +62,13 @@ public class WallClimb : Parkour
                     if (!_player.playerMovement.grounded)//공중이면
                     {
                         if (hit.distance > _freeDis) return false;
-                        if (Physics.Raycast(new Ray(origin + (Vector3.up * _freeHeight), Vector3.down), out RaycastHit hit5, _maxHeight, castLayer))
+                        if (Physics.Raycast(new Ray(origin + (Vector3.up * _freeHeight), Vector3.down), out RaycastHit hit5, _freeHeight, castLayer))
                         {
-                            if (_maxHeight - hit5.distance > 0.5f)
-                            {
-                                failureActions[2].originPos.Add(hit.point);
-                                failureActions[2].originPos.Add(new Vector3(hit.point.x, hit5.point.y, hit.point.z));
-                                failureActions[2].originPos.Add(hit5.point);
-                                parkour = failureActions[2];
-                                return true;
-                            }
+                            failureActions[2].originPos.Add(hit.point);
+                            failureActions[2].originPos.Add(new Vector3(hit.point.x, hit5.point.y, hit.point.z));
+                            failureActions[2].originPos.Add(hit5.point);
+                            parkour = failureActions[2];
+                            return true;
                         }
                         return false;
                     }

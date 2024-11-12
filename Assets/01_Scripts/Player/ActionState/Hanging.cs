@@ -20,7 +20,11 @@ public class Hanging : ActionState
         _player.playerInput.DownJump += Judgment;
         _player.OnPlayerCollisionEnter += CollisionEnter;
     }
-
+    private void OnDestroy()
+    {
+        _player.playerInput.DownJump -= Judgment;
+        _player.OnPlayerCollisionEnter -= CollisionEnter;
+    }
     private void CollisionEnter(Collision obj)
     {
         if (_flying && obj.gameObject != currentJoint.gameObject)
