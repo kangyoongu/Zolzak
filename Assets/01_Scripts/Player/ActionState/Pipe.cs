@@ -6,7 +6,7 @@ public class Pipe : ActionState
 {
     public float hangDistance = 2.0f;  // SphereCast의 최대 거리
     public float offsetY = 2f;// 좌표 오프셋 값
-    public float speed = 1f;
+    public float speed = 10f;
     public float sideMoveDis = 1f;
     [SerializeField] Vector3 _hangOffset;
     [SerializeField] float _duration;
