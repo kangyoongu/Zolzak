@@ -29,6 +29,18 @@ public class UIManager : SingleTon<UIManager>
     public UI[] playUI;
     public GameObject block;
     public Image taskbar;
+    public TextMeshProUGUI timeText;
+
+    private void Update()
+    {
+        if(timeText != null)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd");
+            string time = DateTime.Now.ToString("HH:mm");
+
+            timeText.text = time + "\n" + date;
+        }
+    }
     public void GameOverUIIn()
     {
         In(gameOverUI);
