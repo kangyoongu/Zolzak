@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SpawnWindow : MonoBehaviour
 {
-    public LayerMask selfLayer;  // 자신이 포함된 레이어만 검출할 레이어 마스크
+    public LayerMask selfLayer;
     public GameObject spawnWindow;
     bool _clickLogo = false;
     Camera _cam;

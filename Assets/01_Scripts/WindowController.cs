@@ -12,19 +12,20 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     public bool fixRatio;
     public Vector3 offset;
 
-    private Camera _camera;
     private WindowCam _camCompo;
     private RectTransform _rectTransform;
-    private Transform _parent;
+    public Transform parent;
     Material _imageMat;
     public Action OnClose;
 
     Vector2 _clickPoint;
     Vector2 _clickPos;
     Vector2 _clickSize;
+    Vector2 _closePos;
     DragDirection _clickDirection;
 
     bool _dragging = false;
+    bool _show = true;
     float _ratioX;
     float _ratioY;
     float _startY;
@@ -34,15 +35,20 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     public Action<float, Vector2> OnChangeWindow;
     private void Awake()
     {
+
         taskbarHeight = UIManager.Instance.taskbar.rectTransform.sizeDelta.y;
         screenHeight = Screen.height - taskbarHeight;
+        transform.position = new Vector2(Screen.width * 0.5f, (screenHeight + taskbarHeight) * 0.5f);
         _rectTransform = GetComponent<RectTransform>();
-        _parent = transform.parent;
+
+        parent = Instantiate(parent.gameObject).transform;
+        parent.GetComponent<Button>().onClick.AddListener(ClickIcon);
+        WindowManager.Instance.AddWindow(parent);
 
         GameObject cam = Instantiate(renderCamera);
 
-        _camera = cam.GetComponent<Camera>();
         _camCompo = cam.GetComponent<WindowCam>();
+
     }
     void Start()
     {
@@ -338,23 +344,40 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
 
         Core.SetCustomCursor(Core.NORMAL);
     }
+    private void ClickIcon()
+    {
+        if (_show)
+            Down();
+        else
+            Open();
+    }
     public void Open()
     {
-        _parent.DOScale(Vector3.one, 0.2f).SetEase(Ease.Linear).OnUpdate(() =>
+        _show = true;
+        transform.DOMove(_closePos, 0.2f).SetEase(Ease.Linear);
+        transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.Linear).OnUpdate(() =>
+        {
+            ChangeWindow();
+        });
+    }
+    public void Down()
+    {
+        _show = false;
+        _closePos = transform.position;
+        transform.DOMove(parent.position, 0.2f).SetEase(Ease.Linear);
+        transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.Linear).OnUpdate(() =>
         {
             ChangeWindow();
         });
     }
     public void Close()
     {
-        /*_parent.DOScale(Vector3.zero, 0.2f).SetEase(Ease.Linear).OnUpdate(() =>
-        {
-            ChangeWindow();
-        });*/
+        WindowManager.Instance.RemoveWindow(_rectTransform);
         _dragging = false;
         OnClose?.Invoke();
         Destroy(_camCompo.gameObject);
-        Destroy(_parent.gameObject);
+        Destroy(parent.gameObject);
+        Destroy(gameObject);
     }
 }
 
