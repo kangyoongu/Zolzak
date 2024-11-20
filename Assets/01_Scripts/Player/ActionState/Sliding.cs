@@ -31,7 +31,7 @@ public class Sliding : ActionState
         base.StartAction();
         _sliding = true;
         _player.Rigidbody.isKinematic = false;
-        _player.Rigidbody.linearVelocity = velocity * 1.5f;
+        _player.Rigidbody.linearVelocity = velocity * 2f;
         _player.playerAnim.anim.SetBool("Slide", true);
         _player.playerMovement.LockY(true);
     }

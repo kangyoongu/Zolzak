@@ -8,6 +8,7 @@ TagManager:
   - Pipe
   - Hanging
   - WindowEvent
+  - Lemon
   layers:
   - Default
   - TransparentFX

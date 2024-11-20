@@ -77,6 +77,10 @@ public class WallClimb : Parkour
 
                     if (Physics.Raycast(new Ray(origin + (Vector3.up * _maxHeight), Vector3.down), out RaycastHit hit4, _maxHeight, castLayer))//장애물 높이 체크
                     {
+                        origin = hit4.point + playerDir * -0.4f + Vector3.up * 0.5f;
+                        if (Physics.SphereCast(new Ray(origin, playerDir), 0.2f, 1f, castLayer))
+                            return false;
+
                         failureActions[1].originPos.Add(Vector3.Lerp(hitPos, hit.point, 0.43f));//벽타기
                         failureActions[1].originPos.Add(hit4.point);
                         failureActions[1].originPos.Add(hit4.point);

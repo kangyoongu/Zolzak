@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 062eccb6434b7524b9bdb4451cf7958f
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 123558
+  packageName: Customize Monitor Interface
+  packageVersion: 1.0
+  assetPath: Assets/Interactive Monitor/SampleScene.unity
+  uploadId: 259300

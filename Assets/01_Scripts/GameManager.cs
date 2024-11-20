@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,19 +11,41 @@ public class GameManager : SingleTon<GameManager>
     public Canvas canvas;
     public RenderTexture fullscreenTexture;
     public Transform rightUp;
+    public Transform spawnPoint;
     [SerializeField] Camera _renderCam;
+
+    [HideInInspector] public Material sphereMat;
+    public Transform sphere;
+    [HideInInspector] public Material darkSphereMat;
+    public Transform darkSphere;
     void Start()
     {
         Core.SetCustomCursor(Core.NORMAL);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        sphereMat = sphere.GetComponent<Renderer>().material;
+        darkSphereMat = darkSphere.GetComponent<Renderer>().material;
+        SceneChangeOff(sphere, sphereMat);
         FitWindowScene();
     }
-
-
+    
+    public void Clear()
+    {
+        player.Pause();
+        SceneChangeOn(sphere, sphereMat);
+    }
+    public void SceneChangeOn(Transform target, Material mat)
+    {
+        target.DOScale(Vector3.one * 0.1f, 3f).SetEase(Ease.OutCubic);
+        mat.DOFloat(1f, "_Lerp", 3f).SetEase(Ease.OutCubic);
+    }
+    public void SceneChangeOff(Transform target, Material mat)
+    {
+        target.DOScale(Vector3.one * 100f, 3f).SetEase(Ease.OutCubic);
+        mat.DOFloat(0f, "_Lerp", 3f).SetEase(Ease.OutCubic);
+    }
     private void FitWindowScene()
     {
-        // RenderTexture »ý¼º
         Vector2 resolution = ScaleResolution(Screen.width, Screen.height);
         fullscreenTexture = new RenderTexture((int)resolution.x, (int)resolution.y, 24);
         fullscreenTexture.Create();

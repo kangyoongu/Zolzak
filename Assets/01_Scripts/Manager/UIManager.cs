@@ -30,6 +30,7 @@ public class UIManager : SingleTon<UIManager>
     public GameObject block;
     public Image taskbar;
     public TextMeshProUGUI timeText;
+    public Image hpbar;
 
     private void Update()
     {
@@ -40,6 +41,10 @@ public class UIManager : SingleTon<UIManager>
 
             timeText.text = time + "\n" + date;
         }
+    }
+    public void HpAmount(float value)
+    {
+        hpbar.fillAmount = value;
     }
     public void GameOverUIIn()
     {
