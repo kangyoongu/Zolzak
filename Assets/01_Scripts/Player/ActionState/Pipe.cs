@@ -80,10 +80,10 @@ public class Pipe : ActionState
         Vector3 rayCenter = Vector3.zero;
         Vector3 pipeDir = Vector3.zero;
 
-        bool upable = dir.y > 0.3f && Physics.Raycast(new Ray(transform.position + _offsetY + Vector3.up * 0.1f, transform.forward), 0.6f, _climbLayer) &&
+        bool upable = dir.y > 0.3f && Physics.Raycast(new Ray(transform.position + _offsetY + Vector3.up * 0.1f, transform.forward), 0.3f, _climbLayer) &&
                                       !Physics.Raycast(new Ray(transform.position + _offsetY, transform.up), 0.1f, _climbLayer);
 
-        bool downable = dir.y < -0.3f && Physics.Raycast(new Ray(transform.position - Vector3.up * 0.1f, transform.forward), 0.6f, _climbLayer) &&
+        bool downable = dir.y < -0.3f && Physics.Raycast(new Ray(transform.position - Vector3.up * 0.1f, transform.forward), 0.3f, _climbLayer) &&
                                       !Physics.Raycast(new Ray(transform.position, -transform.up), 0.1f, _climbLayer);
 
 

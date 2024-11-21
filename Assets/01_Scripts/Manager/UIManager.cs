@@ -30,6 +30,8 @@ public class UIManager : SingleTon<UIManager>
     public GameObject block;
     public Image taskbar;
     public TextMeshProUGUI timeText;
+    public TextMeshProUGUI lemonText;
+    public int maxLemon; 
     public Image hpbar;
 
     private void Update()
@@ -46,6 +48,11 @@ public class UIManager : SingleTon<UIManager>
     {
         hpbar.fillAmount = value;
     }
+    public void ChangeLemonText(int value)
+    {
+        lemonText.text = $"{value} / 5";
+    }
+
     public void GameOverUIIn()
     {
         In(gameOverUI);

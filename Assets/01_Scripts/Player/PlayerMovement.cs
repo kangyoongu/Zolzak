@@ -186,8 +186,8 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Unlock()
     {
-        UnlockX();
         UnlockY();
+        UnlockX();
     }
 
 

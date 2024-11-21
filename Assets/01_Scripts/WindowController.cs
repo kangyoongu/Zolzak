@@ -64,7 +64,14 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         ChangeWindow();
     }
 
-
+    private void OnEnable()
+    {
+        GameManager.Instance.diePlayer += Remove;
+    }
+    private void OnDisable()
+    {
+        GameManager.Instance.diePlayer -= Remove;
+    }
     public void OnPointerDown(PointerEventData eventData)
     {
         Vector2 localPoint = eventData.position - (Vector2)transform.position;
@@ -374,6 +381,14 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
         WindowManager.Instance.RemoveWindow(_rectTransform);
         _dragging = false;
         OnClose?.Invoke();
+        Destroy(_camCompo.gameObject);
+        Destroy(parent.gameObject);
+        Destroy(gameObject);
+    }
+    public void Remove()
+    {
+        WindowManager.Instance.RemoveWindow(_rectTransform);
+        _dragging = false;
         Destroy(_camCompo.gameObject);
         Destroy(parent.gameObject);
         Destroy(gameObject);

@@ -12,6 +12,10 @@ public class SpawnWindow : MonoBehaviour
     {
         _cam = Camera.main;
     }
+    private void Start()
+    {
+        _gameManager.windows.Add(gameObject);
+    }
     private void OnEnable()
     {
         if(!_gameManager)
@@ -26,10 +30,17 @@ public class SpawnWindow : MonoBehaviour
         _gameManager.player.playerInput.LCDown -= LClickDown;
         _gameManager.player.playerInput.LCUp -= LClickUp;
     }
+    private void OnDestroy()
+    {
+        _gameManager.windows.Remove(gameObject);
+    }
     private void LClickUp()
     {
         if (DetectSelf() && _clickLogo)
+        {
             Instantiate(spawnWindow, _gameManager.canvas.transform);
+            gameObject.SetActive(false);
+        }
         _clickLogo = false;
     }
 

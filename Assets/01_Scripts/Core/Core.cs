@@ -43,6 +43,11 @@ public static class Core
             yield return null;
         action?.Invoke();
     }
+    public static IEnumerator DelayTime(Action action, float time = 1)
+    {
+        yield return new WaitForSeconds(time);
+        action?.Invoke();
+    }
     public static float Remap(float value, float inputMin, float inputMax, float outputMin, float outputMax)
     {
         return outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);

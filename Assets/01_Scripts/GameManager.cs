@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,6 +19,12 @@ public class GameManager : SingleTon<GameManager>
     public Transform sphere;
     [HideInInspector] public Material darkSphereMat;
     public Transform darkSphere;
+
+    public List<GameObject> lemons;
+    public List<GameObject> windows;
+    public List<GameObject> inWindowObj;
+    public Action diePlayer;
+
     void Start()
     {
         Core.SetCustomCursor(Core.NORMAL);
@@ -28,7 +35,21 @@ public class GameManager : SingleTon<GameManager>
         SceneChangeOff(sphere, sphereMat);
         FitWindowScene();
     }
-    
+    public void ResetObjects()
+    {
+        foreach(GameObject lemon in lemons)
+        {
+            lemon.SetActive(true);
+        }
+        foreach (GameObject window in windows)
+        {
+            window.SetActive(true);
+        }
+        foreach (GameObject obj in inWindowObj)
+        {
+            Destroy(obj);
+        }
+    }
     public void Clear()
     {
         player.Pause();

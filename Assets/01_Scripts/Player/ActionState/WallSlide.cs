@@ -92,6 +92,7 @@ public class WallSlide : ActionState
         yield return new WaitForEndOfFrame();
         if (wallSlide) yield break;
         if (_player.parkouring) yield break;
+
         AnimatorStateInfo stateInfo = _player.playerAnim.anim.GetCurrentAnimatorStateInfo(0);
         if (!stateInfo.IsName("Falling Idle")) yield break;
         RaycastHit hit;
@@ -102,7 +103,7 @@ public class WallSlide : ActionState
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(_player.Rigidbody.linearVelocity, normal);
             projectedVelocity = transform.TransformDirection(projectedVelocity);
 
-            if (projectedVelocity.z > 5f)
+            if (projectedVelocity.z > 4f)
             {
                 StartSet(normal);
                 _player.playerAnim.anim.SetBool("RightWall", true);
@@ -116,7 +117,7 @@ public class WallSlide : ActionState
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(_player.Rigidbody.linearVelocity, normal);
             projectedVelocity = transform.TransformDirection(projectedVelocity);
 
-            if (projectedVelocity.z > 5f)
+            if (projectedVelocity.z > 4f)
             {
                 StartSet(normal);
                 _player.playerAnim.anim.SetBool("LeftWall", true);
@@ -138,8 +139,8 @@ public class WallSlide : ActionState
 
     private bool WallCheckRaycast(Vector3 dir, out RaycastHit hit)
     {
-        return Physics.SphereCast(new Ray(transform.position, dir), 0.3f, out hit, 0.9f, _layerMask) &&
-               Physics.SphereCast(new Ray(transform.position + new Vector3(0f, 1.8f, 0f), dir), 0.3f, 0.9f, _layerMask);
+        return Physics.SphereCast(new Ray(transform.position, dir), 0.3f, out hit, 1.3f, _layerMask) &&
+               Physics.SphereCast(new Ray(transform.position + new Vector3(0f, 1.8f, 0f), dir), 0.3f, 1.3f, _layerMask);
     }
 }
 

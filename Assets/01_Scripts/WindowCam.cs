@@ -35,10 +35,11 @@ public abstract class WindowCam : MonoBehaviour
 
     public void Realize()
     {
-        while (_container.childCount > 0)
+        _container.parent = null;
+        int cnt = _container.childCount;
+        for (int i = 0; i < cnt; i++)
         {
-            Transform child = _container.GetChild(0);
-            child.parent = null;
+            Transform child = _container.GetChild(i);
             child.gameObject.layer = LayerMask.NameToLayer("Default");
             if (child.TryGetComponent(out Collider collider))
             {
@@ -46,6 +47,11 @@ public abstract class WindowCam : MonoBehaviour
                     collider.enabled = true;
             }
         }
-        Destroy(_container.gameObject);
+        GameManager.Instance.inWindowObj.Add(_container.gameObject);
+    }
+    private void OnDestroy()
+    {
+        if (GameManager.Instance.inWindowObj != null)
+            GameManager.Instance.inWindowObj.Remove(gameObject);
     }
 }

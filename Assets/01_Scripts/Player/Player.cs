@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,17 @@ public class Player : MonoBehaviour
     [HideInInspector] public PlayerMovement playerMovement;
     [HideInInspector] public PlayerParkour playerParkour;
     public UnityEvent<float> OnDamage;
-    int lemonCnt = 5;
+    public UnityEvent<int> OnEatLemon;
+    int _lemonCnt = 5;
+    bool eatable = true;
+    public int LemonCnt { 
+        get => _lemonCnt;
+        set
+        {
+            _lemonCnt = value;
+            OnEatLemon?.Invoke(_lemonCnt);
+        } 
+    }
     float _hp = 1f;
     public float Hp
     {
@@ -30,9 +41,14 @@ public class Player : MonoBehaviour
 
     public void EatLemon()
     {
-        lemonCnt--;
-        if (lemonCnt <= 0)
+        if (!eatable) return;
+        eatable = false;
+        LemonCnt--;
+        if (LemonCnt <= 0)
             GameManager.Instance.Clear();
+
+        else
+            StartCoroutine(Core.DelayTime(() => eatable = true, 0.1f));
     }
 
     public PlayerInput playerInput;
@@ -54,6 +70,7 @@ public class Player : MonoBehaviour
         _capsuleCollider = transform.Find("Collider").GetComponent<CapsuleCollider>();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        LemonCnt = LemonCnt;
     }
     public void Pause()
     {
@@ -111,6 +128,7 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
+        GameManager.Instance.diePlayer?.Invoke();
         Pause();
         StartCoroutine(Respawn());
     }
@@ -119,12 +137,25 @@ public class Player : MonoBehaviour
         GameManager.Instance.SceneChangeOn(GameManager.Instance.darkSphere, GameManager.Instance.darkSphereMat);
         yield return new WaitForSeconds(3f);
         transform.position = GameManager.Instance.spawnPoint.position;
+        transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+        Hp = 1f;
+        DOTween.Kill(transform);
+        GameManager.Instance.ResetObjects();
+        LemonCnt = 5;
         Unpause();
+        _rigid.linearVelocity = Vector3.zero;
         GameManager.Instance.SceneChangeOff(GameManager.Instance.darkSphere, GameManager.Instance.darkSphereMat);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         OnPlayerCollisionEnter?.Invoke(collision);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Die"))
+        {
+            Die();
+        }
     }
 }
