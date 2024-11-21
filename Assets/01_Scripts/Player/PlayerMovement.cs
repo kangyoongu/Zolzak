@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     bool _lockY = false;
     bool _lockX = false;
     bool _rotateHead = false;
-
+    [HideInInspector] public bool movable = true;
     #region UNITY_EVENTS
     private void Awake()
     {
@@ -52,7 +52,8 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         FallingCheck();
-        Move(_player.playerInput.Movement);
+        if(movable)
+            Move(_player.playerInput.Movement);
     }
     private void OnDisable()
     {
@@ -61,6 +62,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("Lemon")) return;
+
         if(_triggerCnt == 0) {
 
             if (_fallPoint.y - _player.transform.position.y > _minDamageHeight && downShiftTimer <= _rollLimite && downShiftTimer > 0f)
@@ -69,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 _player.playerAnim.anim.SetInteger("Landing", 1);
                 if (_fallPoint.y - _player.transform.position.y > _minDamageHeight)
-                    _player.GetDamage(0.1f);
+                    _player.GetDamage(Core.Remap(_fallPoint.y - _player.transform.position.y, _minDamageHeight, _maxDamageHeight, _minDamage, _maxDamage));
             }
 
             _fallPoint = Vector3.zero;
@@ -78,6 +81,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
+        if (other.CompareTag("Lemon")) return;
+
         if (!grounded)
         {
             grounded = true;
@@ -85,6 +90,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
+        if (other.CompareTag("Lemon")) return;
+
         _triggerCnt--;
         if (_triggerCnt == 0 && !_player.parkouring)
         {
@@ -176,6 +183,11 @@ public class PlayerMovement : MonoBehaviour
         _beforeLock.y = _rotateHead ? 2 : _beforeLock.y;
         LockX();
         LockY();
+    }
+    public void Unlock()
+    {
+        UnlockX();
+        UnlockY();
     }
 
 

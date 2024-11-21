@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 813996382288076061}
   - component: {fileID: 2722428014742610323}
   - component: {fileID: 4300113686664878314}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: w (6)
   m_TagString: Hanging
   m_Icon: {fileID: 0}

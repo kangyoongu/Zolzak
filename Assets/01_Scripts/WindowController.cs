@@ -35,10 +35,8 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     public Action<float, Vector2> OnChangeWindow;
     private void Awake()
     {
-
         taskbarHeight = UIManager.Instance.taskbar.rectTransform.sizeDelta.y;
         screenHeight = Screen.height - taskbarHeight;
-        transform.position = new Vector2(Screen.width * 0.5f, (screenHeight + taskbarHeight) * 0.5f);
         _rectTransform = GetComponent<RectTransform>();
 
         parent = Instantiate(parent.gameObject).transform;
@@ -54,6 +52,7 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     {
         _startY = _rectTransform.sizeDelta.y;
         _camCompo.Init(Definder.MainCam.transform, offset, this, Screen.height / _startY);
+        _closePos = new Vector2(Screen.width * 0.5f, (Screen.height + taskbarHeight) * 0.5f);
 
         _ratioX = _rectTransform.sizeDelta.x / _rectTransform.sizeDelta.y;
         _ratioY = _rectTransform.sizeDelta.y / _rectTransform.sizeDelta.x;
