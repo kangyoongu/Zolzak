@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour
     [HideInInspector] public PlayerParkour playerParkour;
     public UnityEvent<float> OnDamage;
     public UnityEvent<int> OnEatLemon;
-    int _lemonCnt = 5;
+    [SerializeField] int _lemonCnt;
     bool eatable = true;
     public int LemonCnt { 
         get => _lemonCnt;
@@ -39,17 +40,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void EatLemon()
-    {
-        if (!eatable) return;
-        eatable = false;
-        LemonCnt--;
-        if (LemonCnt <= 0)
-            GameManager.Instance.Clear();
-
-        else
-            StartCoroutine(Core.DelayTime(() => eatable = true, 0.1f));
-    }
 
     public PlayerInput playerInput;
     CapsuleCollider _capsuleCollider;
@@ -62,15 +52,37 @@ public class Player : MonoBehaviour
     public Action<Collision> OnPlayerCollisionEnter;
     private void Awake()
     {
+        Application.targetFrameRate = 120;
+            
         _rigid = GetComponent<Rigidbody>();
 
         playerAnim = GetComponent<PlayerAnimation>();
         playerMovement = GetComponent<PlayerMovement>();
         playerParkour = GetComponent<PlayerParkour>();
         _capsuleCollider = transform.Find("Collider").GetComponent<CapsuleCollider>();
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        if (gameObject.scene.name == "MainScene")
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        _lemonCnt = UIManager.Instance.maxLemon;
         LemonCnt = LemonCnt;
+    }
+    public void EatLemon()
+    {
+        if (!eatable) return;
+        eatable = false;
+        LemonCnt--;
+        if (LemonCnt <= 0)
+            GameManager.Instance.Clear();
+
+        else
+            StartCoroutine(Core.DelayTime(() => eatable = true, 0.1f));
     }
     public void Pause()
     {
@@ -141,7 +153,7 @@ public class Player : MonoBehaviour
         Hp = 1f;
         DOTween.Kill(transform);
         GameManager.Instance.ResetObjects();
-        LemonCnt = 5;
+        _lemonCnt = UIManager.Instance.maxLemon;
         Unpause();
         _rigid.linearVelocity = Vector3.zero;
         GameManager.Instance.SceneChangeOff(GameManager.Instance.darkSphere, GameManager.Instance.darkSphereMat);

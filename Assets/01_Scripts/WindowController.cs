@@ -70,7 +70,8 @@ public class WindowController : MonoBehaviour, IPointerDownHandler, IDragHandler
     }
     private void OnDisable()
     {
-        GameManager.Instance.diePlayer -= Remove;
+        if(GameManager.Instance.diePlayer != null)
+            GameManager.Instance.diePlayer -= Remove;
     }
     public void OnPointerDown(PointerEventData eventData)
     {

@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
-public class GameManager : SingleTon<GameManager>
+public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
     public UnityEvent LockCursor;
     public UnityEvent UnlockCursor;
     public Player player;
@@ -25,6 +27,11 @@ public class GameManager : SingleTon<GameManager>
     public List<GameObject> inWindowObj;
     public Action diePlayer;
 
+    public int sceneIndex = 0;
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
     void Start()
     {
         Core.SetCustomCursor(Core.NORMAL);
@@ -53,12 +60,15 @@ public class GameManager : SingleTon<GameManager>
     public void Clear()
     {
         player.Pause();
-        SceneChangeOn(sphere, sphereMat);
+        SceneChangeOn(sphere, sphereMat, () => SceneManager.LoadSceneAsync(sceneIndex));
     }
-    public void SceneChangeOn(Transform target, Material mat)
+    public void SceneChangeOn(Transform target, Material mat, Action endAction = null)
     {
         target.DOScale(Vector3.one * 0.1f, 3f).SetEase(Ease.OutCubic);
-        mat.DOFloat(1f, "_Lerp", 3f).SetEase(Ease.OutCubic);
+        mat.DOFloat(1f, "_Lerp", 3f).SetEase(Ease.OutCubic).OnComplete(() =>
+        {
+            endAction?.Invoke();
+        });
     }
     public void SceneChangeOff(Transform target, Material mat)
     {

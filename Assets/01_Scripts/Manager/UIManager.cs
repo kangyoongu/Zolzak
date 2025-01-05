@@ -50,7 +50,7 @@ public class UIManager : SingleTon<UIManager>
     }
     public void ChangeLemonText(int value)
     {
-        lemonText.text = $"{value} / 5";
+        lemonText.text = $"{value} / {maxLemon}";
     }
 
     public void GameOverUIIn()

@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 public class SceneChangeFile : MonoBehaviour
 {
@@ -6,6 +8,7 @@ public class SceneChangeFile : MonoBehaviour
     bool _clickLogo = false;
     Camera _cam;
     public Player player;
+    public UnityEvent OnClick;
     private void Awake()
     {
         _cam = Camera.main;
@@ -21,10 +24,12 @@ public class SceneChangeFile : MonoBehaviour
         player.playerInput.LCDown -= LClickDown;
         player.playerInput.LCUp -= LClickUp;
     }
-    private void LClickUp()
+    private async void LClickUp()
     {
         if (DetectSelf() && _clickLogo)
         {
+            OnClick?.Invoke();
+            await Task.Delay(3000);
             SceneManager.LoadScene(1);
         }
         _clickLogo = false;

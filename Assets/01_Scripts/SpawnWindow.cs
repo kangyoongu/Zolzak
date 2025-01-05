@@ -14,25 +14,34 @@ public class SpawnWindow : MonoBehaviour
     }
     private void Start()
     {
-        _gameManager.windows.Add(gameObject);
+        if (!_gameManager)
+            _gameManager = GameManager.Instance;
+
+        StartCoroutine(Core.DelayFrame(() => _gameManager.windows.Add(gameObject)));
     }
     private void OnEnable()
     {
-        if(!_gameManager)
+        if (!_gameManager)
             _gameManager = GameManager.Instance;
 
-        _gameManager.player.playerInput.LCDown += LClickDown;
-        _gameManager.player.playerInput.LCUp += LClickUp;
+        StartCoroutine(Core.DelayFrame(() => {
+            _gameManager.player.playerInput.LCDown += LClickDown;
+            _gameManager.player.playerInput.LCUp += LClickUp;
+        }));
     }
 
     private void OnDisable()
     {
-        _gameManager.player.playerInput.LCDown -= LClickDown;
-        _gameManager.player.playerInput.LCUp -= LClickUp;
+        if (_gameManager != null)
+        {
+            _gameManager.player.playerInput.LCDown -= LClickDown;
+            _gameManager.player.playerInput.LCUp -= LClickUp;
+        }
     }
     private void OnDestroy()
     {
-        _gameManager.windows.Remove(gameObject);
+        if(_gameManager)
+            _gameManager.windows.Remove(gameObject);
     }
     private void LClickUp()
     {

@@ -5,11 +5,11 @@ public class Lemon : MonoBehaviour
     public float rotateSpeed;
     private void Start()
     {
-        GameManager.Instance.lemons.Add(gameObject);
+        StartCoroutine(Core.DelayFrame(() => GameManager.Instance.lemons.Add(gameObject)));
     }
     private void OnDestroy()
     {
-        if (GameManager.Instance.lemons != null)
+        if (GameManager.Instance.lemons != null && GameManager.Instance != null)
             GameManager.Instance.lemons.Remove(gameObject);
     }
     void Update()

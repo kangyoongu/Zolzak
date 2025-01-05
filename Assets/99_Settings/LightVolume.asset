@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: SampleSceneProfile
+  m_Name: LightVolume
   m_EditorClassIdentifier: 
   components:
   - {fileID: 849379129802519247}
@@ -147,11 +147,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   shadows:
-    m_OverrideState: 0
-    m_Value: {x: 1, y: 0.98307353, z: 0.92313975, w: 0.6307923}
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0.885782, z: 0.61732125, w: 0.47533634}
   midtones:
-    m_OverrideState: 0
-    m_Value: {x: 0.9823093, y: 0.9848625, z: 1, w: 0.088492684}
+    m_OverrideState: 1
+    m_Value: {x: 0.9823093, y: 0.9848625, z: 1, w: 0.016743805}
   highlights:
     m_OverrideState: 0
     m_Value: {x: 1, y: 0.9167486, z: 0.73778236, w: -0.689106}
@@ -185,7 +185,7 @@ MonoBehaviour:
     m_Value: 0
   contrast:
     m_OverrideState: 1
-    m_Value: 14
+    m_Value: -14
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 0, b: 0, a: 1}
@@ -194,4 +194,4 @@ MonoBehaviour:
     m_Value: 2
   saturation:
     m_OverrideState: 1
-    m_Value: 32
+    m_Value: -0

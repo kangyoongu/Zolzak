@@ -101,8 +101,7 @@ public class WallSlide : ActionState
             Vector3 normal = hit.normal;
 
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(_player.Rigidbody.linearVelocity, normal);
-            projectedVelocity = transform.TransformDirection(projectedVelocity);
-
+            projectedVelocity = transform.InverseTransformDirection(projectedVelocity);
             if (projectedVelocity.z > 4f)
             {
                 StartSet(normal);
@@ -115,7 +114,7 @@ public class WallSlide : ActionState
             Vector3 normal = hit.normal;
 
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(_player.Rigidbody.linearVelocity, normal);
-            projectedVelocity = transform.TransformDirection(projectedVelocity);
+            projectedVelocity = transform.InverseTransformDirection(projectedVelocity);
 
             if (projectedVelocity.z > 4f)
             {

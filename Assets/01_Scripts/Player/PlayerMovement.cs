@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _player = GetComponent<Player>();
+        _yaw = transform.eulerAngles.y;
     }
     private void OnEnable()
     {
